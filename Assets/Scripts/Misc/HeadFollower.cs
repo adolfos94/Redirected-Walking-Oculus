@@ -1,23 +1,20 @@
 ﻿using UnityEngine;
-using Redirection;
+using System.Collections;
 
-public class HeadFollower : MonoBehaviour
-{
-    private OVRCameraRig OVRCameraRig;
+public class HeadFollower : MonoBehaviour {
 
-    // Use this for initialization
-    private void Start()
-    {
-        OVRCameraRig = GameObject.Find("OVRCameraRig").GetComponent<OVRCameraRig>();
-    }
+    [HideInInspector]
+    public RedirectionManager redirectionManager;
 
-    // Update is called once per frame
-    private void Update()
-    {
-        var currPos = Utilities.FlattenedPos3D(OVRCameraRig.centerEyeAnchor.position);
-        var currDir = Utilities.FlattenedDir3D(OVRCameraRig.centerEyeAnchor.forward);
-
-        transform.position = currPos;
-        transform.rotation = Quaternion.LookRotation(currDir, Vector3.up);
-    }
+	// Use this for initialization
+	void Start () {
+	
+	}
+	
+	// Update is called once per frame
+	void Update () {
+        this.transform.position = redirectionManager.currPos;
+        if (redirectionManager.currDir != Vector3.zero)
+            this.transform.rotation = Quaternion.LookRotation(redirectionManager.currDir, Vector3.up);
+	}
 }

@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
+using System.Collections;
+
 
 namespace Redirection
 {
     public static class Utilities
     {
+
         public static Vector3 FlattenedPos3D(Vector3 vec, float height = 0)
         {
             return new Vector3(vec.x, height, vec.z);
