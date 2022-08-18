@@ -30,21 +30,22 @@ public class RedirectionManager : MonoBehaviour
     [Range(1, 23)]
     public float CURVATURE_RADIUS = 7.5F;
 
-    [Tooltip("The game object that is being physically tracked (probably user's head)")]
-    public Transform headTransform;
-
     [Tooltip("Use simulated framerate in auto-pilot mode")]
     public bool useManualTime = false;
 
     [Tooltip("Target simulated framerate in auto-pilot mode")]
     public float targetFPS = 60;
 
+    [Tooltip("The game object that is being physically tracked (probably user's head)")]
+    public Transform headTransform;
+
+    public Transform simulatedHead;
+
     public Transform body;
 
     public Transform trackedSpace;
 
-    [HideInInspector]
-    public Transform simulatedHead;
+    private OVRCameraRig OVRCamera;
 
     [HideInInspector]
     public Redirector redirector;
@@ -115,6 +116,8 @@ public class RedirectionManager : MonoBehaviour
     // Use this for initialization
     private void Start()
     {
+        OVRCamera = GameObject.Find("OVRCameraRig").GetComponent<OVRCameraRig>();
+
         if (resetTrigger != null)
             resetTrigger.Initialize();
 
@@ -122,13 +125,22 @@ public class RedirectionManager : MonoBehaviour
             resetter.Initialize();
 
         simulatedTime = 0;
+
+#if UNITY_EDITOR
         headTransform = simulatedHead;
+#else
+        headTransform = OVRCamera.centerEyeAnchor;
+#endif
         UpdatePreviousUserState();
     }
 
     // Update is called once per frame
     private void Update()
     {
+#if UNITY_EDITOR
+        OVRCamera.transform.position = headTransform.position;
+        OVRCamera.transform.rotation = headTransform.rotation;
+#endif
     }
 
     private void LateUpdate()
